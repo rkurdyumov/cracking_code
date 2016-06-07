@@ -1,63 +1,63 @@
-#include <cassert>
+#include <stdexcept> // std::out_of_range
 #include <queue> // for Breadth First Search
 #include <stack> // for Depth First Search
 
 template <typename T>
-int Graph<T>::AddVertex(T value)
+size_t Graph<T>::AddVertex(const T & value)
 {
-    int id = VertexCount(); // id is the index into vertices array
+    size_t id = VertexCount();
     vertices.push_back(Vertex(id, value));
     return id;
 }
 
 template <typename T>
-std::pair<int, int> Graph<T>::AddEdgeAndVertices(T start_value, T end_value, int cost)
+std::pair<size_t, size_t> Graph<T>::AddEdgeAndVertices(const T & start_value, 
+        const T & end_value, int cost)
 {
-    int start_id = AddVertex(start_value);
-    int end_id = AddVertex(end_value);
+    size_t start_id = AddVertex(start_value);
+    size_t end_id = AddVertex(end_value);
     AddEdge(start_id, end_id, cost);
-    return std::pair<int, int> (start_id, end_id);
+    return std::make_pair(start_id, end_id);
 }
 
 template <typename T>
-void Graph<T>::AddEdge(int start_id, int end_id, int cost)
+void Graph<T>::AddEdge(size_t start_id, size_t end_id, int cost)
 {
-    assert(start_id >= 0 && start_id < VertexCount());
-    assert(end_id >= 0 && end_id < VertexCount());
+    if (start_id < 0 || start_id >= VertexCount())
+        throw std::out_of_range("Start vertex id out of range");
+    if (end_id < 0 || end_id >= VertexCount())
+        throw std::out_of_range("End vertex id out of range");
     vertices[start_id].AddEdge(end_id, cost);
     if (!directed)
         vertices[end_id].AddEdge(start_id, cost);
 }
 
 template <typename T>
-int Graph<T>::VertexCount() const
+size_t Graph<T>::VertexCount() const
 {
     return vertices.size();
 }
 
 template <typename T>
-const T & Graph<T>::GetVertexData(int vertex_id) const
+const T & Graph<T>::GetVertexData(size_t vertex_id) const
 {
     return vertices[vertex_id].GetData();
 }
 
 template <typename T>
-std::vector<int> Graph<T>::GetAllVertexIDs() const
+T & Graph<T>::GetVertexData(size_t vertex_id)
 {
-    std::vector<int> vertex_ids(VertexCount());
-    for (size_t i = 0; i < vertex_ids.size(); ++i)
-        vertex_ids[i] = i;
-    return vertex_ids;
+    return vertices[vertex_id].GetData();
 }
 
 template <typename T>
-std::pair<std::vector<int>, std::vector<int>> Graph<T>::BreadthFirstSearch(int start_id) const
+std::pair<std::vector<size_t>, std::vector<size_t>> Graph<T>::BreadthFirstSearch(size_t start_id) const
 {
-    std::vector<int> parent(VertexCount(), -1);
-    std::vector<int> vertex_ids(VertexCount(), -1);
+    std::vector<size_t> parent(VertexCount(), -1);
+    std::vector<size_t> vertex_ids(VertexCount(), -1);
     std::vector<bool> visited(VertexCount(), false);
     
-    std::queue<int> q; // holds vertex ids still to be explored
+    std::queue<size_t> q; // holds vertex ids still to be explored
     q.push(start_id);
     int index = 0;
     vertex_ids[index++] = start_id;
@@ -66,12 +66,12 @@ std::pair<std::vector<int>, std::vector<int>> Graph<T>::BreadthFirstSearch(int s
 
     while (!q.empty())
     {
-        int id = q.front();
+        size_t id = q.front();
         q.pop();
         // process vertex here if desired
         for (const OutEdge e : vertices[id].GetOutgoingEdges())
         {
-            int neighbor_id = e.GetDestID();
+            size_t neighbor_id = e.GetDestID();
             if (!visited[neighbor_id])
             {
                 visited[neighbor_id] = true;
@@ -85,27 +85,27 @@ std::pair<std::vector<int>, std::vector<int>> Graph<T>::BreadthFirstSearch(int s
 }
 
 template <typename T>
-std::vector<int> Graph<T>::DepthFirstSearch(int start_id, bool recursive) const
+std::vector<size_t> Graph<T>::DepthFirstSearch(size_t start_id, bool recursive) const
 {
     std::vector<bool> visited(VertexCount(), false);
 
     // Recursive implementation
     if (recursive)
     {
-        std::vector<int> visit_order_recursive;
+        std::vector<size_t> visit_order_recursive;
         DepthFirstSearchRecursive(start_id, visit_order_recursive, visited);
         return visit_order_recursive;
     }
 
     // Iterative implementation
-    std::vector<int> visit_order(VertexCount(), -1);
-    std::stack<int> s; // holds vertex ids still to be explored
+    std::vector<size_t> visit_order(VertexCount(), -1);
+    std::stack<size_t> s; // holds vertex ids still to be explored
     s.push(start_id);
 
     int index = 0;
     while (!s.empty())
     {
-        int id = s.top();
+        size_t id = s.top();
         s.pop();
         if (!visited[id])
         {
@@ -113,7 +113,7 @@ std::vector<int> Graph<T>::DepthFirstSearch(int start_id, bool recursive) const
             visit_order[index++] = id;
             for (const OutEdge e : vertices[id].GetOutgoingEdges())
             {
-                int neighbor_id = e.GetDestID();
+                size_t neighbor_id = e.GetDestID();
                 s.push(neighbor_id);
             }
         }
@@ -122,21 +122,33 @@ std::vector<int> Graph<T>::DepthFirstSearch(int start_id, bool recursive) const
 }
 
 template <typename T>
-std::ostream & operator<<(std::ostream & out, Graph<T> & g)
+std::ostream & operator<<(std::ostream & out, const Graph<T> & g)
 {
     g.Print(out);
     return out;
 }
 
 template <typename T>
-void Graph<T>::DepthFirstSearchRecursive(int vertex_id, std::vector<int> & visit_order, 
+typename Graph<T>::GraphIterator Graph<T>::begin() const
+{
+    return GraphIterator(0);
+}
+
+template <typename T>
+typename Graph<T>::GraphIterator Graph<T>::end() const
+{
+    return GraphIterator(vertices.size());
+}
+
+template <typename T>
+void Graph<T>::DepthFirstSearchRecursive(size_t vertex_id, std::vector<size_t> & visit_order, 
         std::vector<bool> & visited) const
 {
     visited[vertex_id] = true;
     visit_order.push_back(vertex_id); // pre-order
     for (const OutEdge e : vertices[vertex_id].GetOutgoingEdges())
     {
-        int neighbor_id = e.GetDestID();
+        size_t neighbor_id = e.GetDestID();
         if (!visited[neighbor_id])
             DepthFirstSearchRecursive(neighbor_id, visit_order, visited);
     }
@@ -166,7 +178,7 @@ void Graph<T>::Print(std::ostream & out) const
 }
 
 template <typename T>
-const int Graph<T>::OutEdge::GetDestID() const
+const size_t Graph<T>::OutEdge::GetDestID() const
 {
     return dest_id;
 }
@@ -178,13 +190,19 @@ const int Graph<T>::OutEdge::GetCost() const
 }
 
 template <typename T>
-void Graph<T>::Vertex::AddEdge(int end_id, int cost)
+void Graph<T>::Vertex::AddEdge(size_t end_id, int cost)
 {
     outgoing_edges.push_back(OutEdge(end_id, cost));
 }
 
 template <typename T>
 const T & Graph<T>::Vertex::GetData() const
+{
+    return data;
+}
+
+template <typename T>
+T & Graph<T>::Vertex::GetData()
 {
     return data;
 }

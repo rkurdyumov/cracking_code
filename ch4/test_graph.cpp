@@ -10,10 +10,10 @@ int main()
     // https://en.wikipedia.org/wiki/Depth-first_search
     Graph<std::string> g;
 
-    std::pair<int, int> ids_A_B = g.AddEdgeAndVertices("A", "B");
-    std::pair<int, int> ids_C_G = g.AddEdgeAndVertices("C", "G");
-    std::pair<int, int> ids_E_F = g.AddEdgeAndVertices("E", "F");
-    int id_D = g.AddVertex("D");
+    std::pair<size_t, size_t> ids_A_B = g.AddEdgeAndVertices("A", "B");
+    std::pair<size_t, size_t> ids_C_G = g.AddEdgeAndVertices("C", "G");
+    std::pair<size_t, size_t> ids_E_F = g.AddEdgeAndVertices("E", "F");
+    size_t id_D = g.AddVertex("D");
 
     g.AddEdge(ids_A_B.first, ids_C_G.first); // A<-->C
     g.AddEdge(ids_A_B.first, ids_E_F.first); // A<-->E
@@ -24,14 +24,14 @@ int main()
     std::cout << g;
 
     // Breadth first search
-    std::pair<std::vector<int>, std::vector<int>> vertex_parents = 
+    std::pair<std::vector<size_t>, std::vector<size_t>> vertex_parents = 
         g.BreadthFirstSearch(ids_A_B.first);
 
-    int first_vertex = vertex_parents.first[0]; // starting ID
+    size_t first_vertex = vertex_parents.first[0]; // starting ID
     std::cout << "\nBFS starting at vertex " << g.GetVertexData(ids_A_B.first) << ":\n";
     for (size_t i = 0; i < vertex_parents.first.size(); ++i)
     {
-        int curr_vertex = vertex_parents.first[i];
+        size_t curr_vertex = vertex_parents.first[i];
         int distance = 0;
         while (curr_vertex != first_vertex)
         {
@@ -43,9 +43,17 @@ int main()
     }
 
     // Depth first search
-    std::vector<int> visit_order = g.DepthFirstSearch(ids_A_B.first, true);
+    std::vector<size_t> visit_order = g.DepthFirstSearch(ids_A_B.first, true);
     std::cout << "\nDFS starting at vertex " << g.GetVertexData(ids_A_B.first) << ":\n";
-    for (int vertex_id : visit_order)
+    for (size_t vertex_id : visit_order)
         std::cout << g.GetVertexData(vertex_id) << "->";
     std::cout << "\n";
+
+    std::cout << "\nAccess vertex data using iterator: ";
+    for (Graph<std::string>::GraphIterator it = g.begin(); it != g.end(); ++it)
+    {
+        std::cout << g.GetVertexData(*it) << " ";
+    }
+    std::cout << "\n";
+
 }

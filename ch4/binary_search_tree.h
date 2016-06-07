@@ -2,8 +2,6 @@
 #define BINARY_SEARCH_TREE_H
 
 #include <ostream>
-#include <iomanip> // for std::setw() 
-#include <utility? // for std::swap()
 
 template <typename T>
 class BinarySearchTree
@@ -33,7 +31,7 @@ class BinarySearchTree
         void PrintInOrder(std::ostream & out) const;
         void PrintPostOrder(std::ostream & out) const;
 
-    private:
+    protected:
         class Node
         {
             public:
@@ -44,31 +42,32 @@ class BinarySearchTree
                 Node(const T& value, Node *l = nullptr, Node *r = nullptr) : 
                     data(value), left(l), right(r) {}
                 ~Node() { delete left; delete right; }
-                
-                Node * Copy() const; // deep copy
-                Node * Find(const T & value); // find Node with value
-                Node ** Where(const T & value); // find place for Node with value
-                
-                bool Remove(const T & value); // remove Node with value
-                const T & MinValue() const; // find Node with minimum value
-                const T & MaxValue() const; // find Node with minimum value
-                bool IsBST(Node * prev_node) const;
-                bool IsEqual(Node * other) const;
-                
-                void Print(std::ostream & out, int indent) const; // recursively print Node
-                void PrintPreOrder(std::ostream & out) const;
-                void PrintInOrder(std::ostream & out) const;
-                void PrintPostOrder(std::ostream & out) const;
-            
-            private:
-                Node * FindParent(const T & value); // find parent of Node with value
         };
         
         Node *root = nullptr;
         size_t size = 0;
+    
+    private:
         void swap(BinarySearchTree & other);
+        
+        const T & MinValue(const Node * curr) const; // find Node with minimum value
+        const T & MaxValue(const Node * curr) const; // find Node with minimum value
+        
+        Node * Copy(const Node * n) const; // deep copy
+        const Node * Find(const Node * curr, const T & value) const; // find Node with value
+        Node * FindParent(Node * curr, const T & value);        
+        Node ** Where(Node * curr, const T & value); // find place for Node with value
+        
+        bool Remove(Node * ancestor, const T & value); // remove Node with value
+        bool IsBST(const Node * curr, const Node * prev) const;
+        bool IsEqual(const Node * curr, const Node * other) const;
+
+        void Print(const Node * n, std::ostream & out, int indent = 0) const; // pretty print
+        void PrintPreOrder(const Node * n, std::ostream & out) const;
+        void PrintInOrder(const Node * n, std::ostream & out) const;
+        void PrintPostOrder(const Node * n, std::ostream & out) const;
 };
 
-#include "binary_search_tree.cpp"
+#include "binary_search_tree.tpp"
 
 #endif
