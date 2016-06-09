@@ -1,7 +1,15 @@
+/*
+Assume you have a method isSubstring which checks if one word is a substring of
+another. Given two strings, s1 and s2, write code to check if s2 is a rotation 
+of s1 using only one call to isSubstring (i.e., "waterbottle" is a rotation of 
+"erbottlewat").
+*/
+
 #include <iostream>
 #include <string>
 
-static bool isSubstring(std::string s1, std::string s2)
+// Soluton: Contatenate s1 with itself and check if s2 is a substring
+static bool IsRotation(const std::string & s1, const std::string & s2)
 {
     if (s1.length() != s2.length() || s1.length() == 0)
         return false;
@@ -18,12 +26,7 @@ int main()
         std::cin >> s1;
         std::cout << "Enter string 2: ";
         std::cin >> s2;
-        bool flag = isSubstring(s1,s2);
-        if (flag)
-            std::cout << "Yes, rotation." << std::endl;
-        else
-            std::cout << "No, not a rotation." << std::endl;
+        std::cout << "Is a rotation: " << IsRotation(s1, s2) << "\n";
     }
-    return 0;
 }
 

@@ -1,7 +1,13 @@
+/*
+Implement an algorithm to determine if a string has all unique characters. What 
+if you can not use additional data structures?
+*/
+
 #include <iostream>
 #include <string>
 #include <cstdint>
 
+// Solution 1: Use additional boolean array, O(N) space where N = alphabet size
 static bool hasUniqueAsciiChars(std::string str)
 {
     bool ascii_chars[256] = {false};
@@ -14,11 +20,12 @@ static bool hasUniqueAsciiChars(std::string str)
     return true;
 }
 
-// Note that because we use uint32_t for used_letters, this function
-// will work for both uppercase and lowercase letters (but not other
-// characters) since they're exactly separated by 32 ASCII codes and
-// will therefore map to the same ON bit due to integer overflow.
-static bool hasUniqueLowerCaseLetters(std::string str)
+// Solution 2: No additional storage, but can only differentiate among 32 chars
+// Note that because we use uint32_t for used_letters, this function will return 
+// false for the same uppercase and lowercase letter (but not other characters) 
+// since they're exactly separated by 32 ASCII codes and will therefore map to 
+// the same ON bit due to integer overflow.
+static bool hasUniqueLetters(std::string str)
 {
     uint32_t used_letters = 0;
     for (int i = 0; i < (int)str.length(); i++)
@@ -37,12 +44,10 @@ int main()
         std::string str;
         std::cout << "Enter a word to check for duplicate chars: ";
         std::cin >> str;
-        //bool unique = hasUniqueAsciiChars(str);
-        bool unique = hasUniqueLowerCaseLetters(str);
-        if (unique == true)
-            std::cout << str << " is unique (no duplicates)" << std::endl;
-        else
-            std::cout << str << " is not unique (has duplicates)" << std::endl;
+        bool unique_char = hasUniqueAsciiChars(str);
+        bool unique_letter = hasUniqueLetters(str);
+        std::cout << str << " has unique ASCII characters: " << unique_char << "\n";
+        std::cout << str << " has unique letters: " << unique_letter << "\n";
     }
     return 0;
 }    

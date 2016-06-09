@@ -1,9 +1,16 @@
+/*
+Write a method to decide if two strings are anagrams or not.
+*/
+
 #include <iostream>
 #include <cstring>
 #include <string>
 #include <algorithm>
 
-static bool isAnagramSimple(char *str1, char *str2)
+// Solution 1: Check if sorted strings are identical
+// O(NlogN + MlogM) time complexity
+// O(N+M) space if we need to preserve strings, could be O(1) space otherwise
+static bool IsAnagram1(const std::string & str1, const std::string & str2)
 {
     std::string strA = str1;
     std::string strB = str2;
@@ -12,55 +19,46 @@ static bool isAnagramSimple(char *str1, char *str2)
     return (strA == strB);
 }
 
-static bool isAnagram(char *str1, char *str2)
+// Solution 2: Check if two strings have identical counts for each unique char
+static bool IsAnagram2(const std::string & str1, const std::string & str2)
 {
-    int len1 = std::strlen(str1);
-    int len2 = std::strlen(str2);
-    if (len1 != len2) return false;
+    if (str1.length() != str2.length()) return false;
 
-    int unique_letters[256] = {0};
+    int unique_chars[256] = {0}; // first string has no unique chars yet
     int num_unique_chars = 0;
     int num_completed_chars = 0;
 
-    for (int i = 0; i < len1; i++)
+    for (size_t i = 0; i < str1.length(); i++)
     {
-        unsigned char c = str1[i];
-        if (unique_letters[c] == 0) ++num_unique_chars;
-        ++unique_letters[c];
+        unsigned char c = str1[i]; // must use unsigned char as array index
+        if (unique_chars[c] == 0) ++num_unique_chars;
+        ++unique_chars[c];
     }
     
-    for (int i = 0; i < len2; i++)
+    for (size_t i = 0; i < str2.length(); i++)
     {
         unsigned char c = str2[i];
-        if (unique_letters[c] == 0) return false;
-        --unique_letters[c];
-        if (unique_letters[c] == 0)
+        if (unique_chars[c] == 0) return false; // 2nd string has new letter
+        --unique_chars[c];
+        if (unique_chars[c] == 0)
         {
             ++num_completed_chars;
             if (num_completed_chars == num_unique_chars)
-            {
-                bool finished_str2 = (i == len2) - 1;
-                return finished_str2;
-            }
+                return i == str2.length() - 1; // done processing 1, so check 2
         }
-
     }
     return false;
 }
 int main()
 {
-    char str1[50], str2[50];
+    std::string str1, str2;
     while(true)
     {
         std::cout << "Enter first string: ";
-        std::cin.getline(str1, 50);
+        std::getline(std::cin, str1);
         std::cout << "Enter second string: ";
-        std::cin.getline(str2, 50);
-        bool is_anagram = isAnagramSimple(str1, str2);
-        if (is_anagram)
-            std::cout << "Yes, anagram!" << std::endl;
-        else
-            std::cout << "No, not an anagram!" << std::endl;
+        std::getline(std::cin, str2);
+        std::cout << "Is anagram w/ Solution 1: " << IsAnagram1(str1, str2) << "\n";
+        std::cout << "Is anagram w/ Solution 2: " << IsAnagram2(str1, str2) << "\n";
     }
-    return 0;
 }

@@ -1,26 +1,32 @@
+/*
+Given an image represented by an NxN matrix, where each pixel in the image is 4
+bytes, write a method to rotate the image by 90 degrees. Can you do this in 
+place?
+*/
+
 #include <iostream>
 
-const int N = 4;
+const size_t N = 4; // current code assumes NxN matrix
 
-static void print_mat(int M[][N], int N)
+static void print_mat(int M[][N], size_t N)
 {
-    for (int r = 0; r < N; ++r)
+    for (size_t r = 0; r < N; ++r)
     {
-        for (int c = 0; c < N; ++c)
+        for (size_t c = 0; c < N; ++c)
         {
             std::cout << M[r][c] << " "; 
         }
-        std::cout << std::endl;
+        std::cout << "\n";
     }
 }
 
-static void rotate_mat(int M[][N], int N)
+static void rotate_mat(int M[][N], size_t N)
 {
-    for (int row = 0; row < N/2; ++row)
+    for (size_t row = 0; row < N/2; ++row)
     {
-        int first = row;
-        int last = N - row - 1;
-        for (int i = first; i < last; ++i)
+        size_t first = row;
+        size_t last = N - row - 1;
+        for (size_t i = first; i < last; ++i)
         {
             int top = M[first][i]; // store top
             M[first][i] = M[last - (i - first)][first]; // left -> top
@@ -33,9 +39,14 @@ static void rotate_mat(int M[][N], int N)
 
 int main()
 {
-    int M[][N] = {{11,12,13,14},{15,16,17,18},{19,20,21,22},{23,24,25,26}};
-    print_mat(M, N);
+    int M[][N] = {
+        {11, 12, 13, 14},
+        {15, 16, 17, 18},
+        {19, 20, 21, 22},
+        {23, 24, 25, 26}};
+    
+    print_mat(M, N); 
     rotate_mat(M, N);
-    std::cout << std::endl;
+    std::cout << "\nAfter rotation:\n";
     print_mat(M, N);
 }
