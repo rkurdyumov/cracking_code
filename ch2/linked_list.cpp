@@ -2,10 +2,6 @@
 #include <assert.h>
 #include "linked_list.h"
 
-LinkedList::LinkedList(): head(nullptr), tail(nullptr) 
-{
-}
-
 LinkedList::LinkedList(const LinkedList &list): LinkedList() // call base constructor
 {
     for (const Node *n = list.Begin(); n != list.End(); n = n->next)
@@ -71,8 +67,9 @@ bool LinkedList::IsEmpty() const
 
 void LinkedList::Append(int data)
 {
-    Node *new_node = new(std::nothrow) Node;
+    Node * new_node = new(std::nothrow) Node;
     assert(new_node != nullptr);
+    
     new_node->data = data;
     if (IsEmpty())
     { 
@@ -85,7 +82,7 @@ void LinkedList::Append(int data)
 
 void LinkedList::PushFront(int data)
 {
-    Node *new_node = new(std::nothrow) Node;
+    Node * new_node = new(std::nothrow) Node;
     assert(new_node != nullptr);
     
     new_node->data = data;
@@ -98,12 +95,12 @@ void LinkedList::PushFront(int data)
 void LinkedList::PopFront()
 {
     assert(!IsEmpty());
-    Node *old_head = head;
+    Node * old_head = head;
     head = old_head->next;
     delete old_head;
 }
 
-void LinkedList::InsertAfter(Node *n, int data)
+void LinkedList::InsertAfter(Node * n, int data)
 {
     assert(n != nullptr);
     if (n == tail)
@@ -112,7 +109,7 @@ void LinkedList::InsertAfter(Node *n, int data)
         return;
     }
 
-    Node *new_node = new(std::nothrow) Node;
+    Node * new_node = new(std::nothrow) Node;
     assert(new_node != nullptr);
 
     new_node->data = data;
@@ -120,7 +117,7 @@ void LinkedList::InsertAfter(Node *n, int data)
     n->next = new_node;
 }
 
-void LinkedList::DeleteAfter(Node *n)
+void LinkedList::DeleteAfter(Node * n)
 {
     assert(n != nullptr);
     if (n == tail) return;
@@ -131,12 +128,13 @@ void LinkedList::DeleteAfter(Node *n)
 
 void LinkedList::Reverse()
 {
-    Node *prev = nullptr;
-    Node *curr = head;
-    tail = curr;
+    tail = head;
+    
+    Node * prev = nullptr;
+    Node * curr = head;
     while (curr != nullptr)
     {
-        Node *next = curr->next;
+        Node * next = curr->next;
         curr->next = prev;
         prev = curr;
         curr = next;
@@ -164,7 +162,7 @@ const LinkedList::Node * LinkedList::Begin() const { return head; }
 
 const LinkedList::Node * LinkedList::End() const {return nullptr; }
 
-void LinkedList::Print(std::ostream &out) const
+void LinkedList::Print(std::ostream & out) const
 {
     for (const Node *n = Begin(); n != End(); n = n->next)
         out << n->data << "-->";

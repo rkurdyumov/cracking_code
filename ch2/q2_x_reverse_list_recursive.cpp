@@ -1,3 +1,8 @@
+/*
+Reverse a singly linked list using recursion.  See linked_list.cpp for the 
+iterative implementation.
+*/
+
 #include <iostream>
 #include "linked_list.h"
 
@@ -6,21 +11,24 @@ class LinkedListExtended : public LinkedList
     public:
         void ReverseListRecursive();
     private:
-        Node * RecursiveHelper(Node *k);
+        Node * RecursiveHelper(Node * n);
 };
 
 void LinkedListExtended::ReverseListRecursive()
 {
-    Node *start = head;
-    head = RecursiveHelper(start);
+    if (IsEmpty())
+        return;
+    tail = head;
+    head = RecursiveHelper(head);
 }
 
-LinkedListExtended::Node * LinkedListExtended::RecursiveHelper(Node *first)
+LinkedListExtended::Node * LinkedListExtended::RecursiveHelper(Node * n)
 {
-    if (first == nullptr || first->next == nullptr) return first;
-    Node *rest = RecursiveHelper(first->next);
-    first->next->next = first;
-    first->next = nullptr;
+    if (n->next == nullptr) 
+        return n;
+    Node * rest = RecursiveHelper(n->next);
+    n->next->next = n;
+    n->next = nullptr;
     return rest;
 }
 
@@ -31,10 +39,8 @@ int main()
     list.Append(1);
     list.Append(2);
     list.Append(3);
-    std::cout << "list: " << list << std::endl;
+    std::cout << "list: " << list << "\n";
 
     list.ReverseListRecursive();
-    std::cout << "list.ReverseListRecursive(): " << list << std::endl;
-
-    return 0;
+    std::cout << "list.ReverseListRecursive(): " << list << "\n";
 }

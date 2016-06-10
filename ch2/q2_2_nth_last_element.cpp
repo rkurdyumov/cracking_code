@@ -1,49 +1,60 @@
+/*
+Implement an algorithm to find the nth to last element of a singly linked list.
+*/
+
 #include <iostream>
 #include <set>
 #include "linked_list.h"
 
 class LinkedListExtended : public LinkedList {
     public:
-        Node * NthToLastElement(int n) const;
-        Node * NthToLastElementRecursive(int n);
+        int NthToLastElement(int n) const;
+        int NthToLastElementRecursive(int n);
     private:
         Node * RecursiveHelper(Node *p, int n, int &depth);
 };
 
-// Iterative solution
-LinkedListExtended::Node * LinkedListExtended::NthToLastElement(int n) const
+// Iterative solution: advance leader pointer by n-1, then advance both until
+// leader hits the last node
+int LinkedListExtended::NthToLastElement(int n) const
 {
-    if (IsEmpty() || n < 1) return nullptr;
+    if (IsEmpty() || n < 1) return -1;
 
-    Node *n2 = head, *n1 = head;
+    Node *leader = head, *trailer = head;
     for (int i = 0; i < n - 1; ++i)
     {
-        if (n2 == nullptr) return nullptr; // went past tail
-        n2 = n2->next;
+        leader = leader->next;
+        if (leader == nullptr)
+            return -1;
     }
-    while (n2 != tail)
+    while (leader != tail)
     {
-        n1 = n1->next;
-        n2 = n2->next;
+        trailer = trailer->next;
+        leader = leader->next;
     }
-    return n1;
+    return trailer->data;
 }
 
-// Recursive solution
-LinkedListExtended::Node * LinkedListExtended::NthToLastElementRecursive(int n)
+// Recursive solution: recurse down to tail, then track the depth coming out
+int LinkedListExtended::NthToLastElementRecursive(int n)
 {
-    if (IsEmpty() || n < 1) return nullptr;
+    if (IsEmpty() || n < 1) return -1;
     int depth = 0;
-    return RecursiveHelper(head, n, depth);
+    Node * result = RecursiveHelper(head, n, depth);
+    return result == nullptr ? -1 : result->data;
 }
 
-LinkedListExtended::Node * LinkedListExtended::RecursiveHelper(Node *p, int n, int &depth)
+LinkedListExtended::Node * LinkedListExtended::RecursiveHelper(Node *p, int n, 
+        int & depth)
 {
     Node *result = p; // assignment only used for base case (when p = tail)
+
     if (p != tail)
         result = RecursiveHelper(p->next, n, depth);
     if (++depth == n)
         return p;
+    else if (p == head && depth < n) // if we've recursed all the way back, n is too big
+        return nullptr;
     else
         return result;
 }
@@ -59,17 +70,15 @@ int main()
     std::cout << "list: " << list << std::endl; // should have [0 1 2 3 4];
    
     std::cout << "Iterative solution:" << std::endl;
-    for (int k = 1; k <= 5; ++k)
+    for (int k = 1; k <= 6; ++k)
     {
-        LinkedListExtended::Node *n = list.NthToLastElement(k);
-        std::cout << "The " << k << " to last element is " << n->data << std::endl;
+        std::cout << "The " << k << " to last element is " << 
+            list.NthToLastElement(k) << "\n";
     }
     std::cout << "Recursive solution:" << std::endl;
-    for (int k = 1; k <= 5; ++k)
+    for (int k = 1; k <= 6; ++k)
     {
-        LinkedListExtended::Node *n = list.NthToLastElementRecursive(k);
-        std::cout << "The " << k << " to last element is " << n->data << std::endl;
+        std::cout << "The " << k << " to last element is " << 
+            list.NthToLastElementRecursive(k) << "\n";
     }
-
-    return 0;
 }

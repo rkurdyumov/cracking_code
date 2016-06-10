@@ -1,10 +1,21 @@
-#include<iostream>
+/*
+Given a circular linked list, implement an algorithm which returns node at the 
+begin ning of the loop.
+DEFINITION
+Circular linked list: A (corrupt) linked list in which a node's next pointer 
+points to an earlier node, so as to make a loop in the linked list.
+EXAMPLE
+Input: A -> B -> C -> D -> E -> C [the same C as earlier]
+Output: C
+*/
+
+#include <iostream>
 #include "linked_list.h"
 
 class LinkedListExtended : public LinkedList 
 {
     public:
-        LinkedListExtended();
+        LinkedListExtended() : LinkedList() {} 
         LinkedListExtended(const LinkedListExtended &list);
         ~LinkedListExtended();
         void MakeLoop(int data);
@@ -13,15 +24,11 @@ class LinkedListExtended : public LinkedList
         virtual void Print(std::ostream &out) const;
 };
 
-// Need to provide a base constructor because we provide copy constructor
-LinkedListExtended::LinkedListExtended() : LinkedList() 
-{
-}
-
 // Override the copy constructor because the base class one will loop forever
-LinkedListExtended::LinkedListExtended(const LinkedListExtended &list) : LinkedListExtended()
+LinkedListExtended::LinkedListExtended(const LinkedListExtended & list) : 
+    LinkedListExtended()
 {
-    Node *curr = list.head;
+    Node * curr = list.head;
     while (curr != list.tail)
     {
         Append(curr->data);
@@ -39,7 +46,7 @@ LinkedListExtended::~LinkedListExtended()
 
 void LinkedListExtended::MakeLoop(int data)
 {
-    for (Node *curr = Begin(); curr != End(); curr = curr->next)
+    for (Node * curr = Begin(); curr != End(); curr = curr->next)
     {
         if (curr->data == data)
         {
@@ -51,10 +58,12 @@ void LinkedListExtended::MakeLoop(int data)
 
 int LinkedListExtended::ReturnLoopStart() const
 {
-    if (IsEmpty() || head->next == nullptr) return -1;
+    if (IsEmpty() || head->next == nullptr) 
+        return -1;
 
     // Move the fast pointer at 2x speed, they will meet k nodes from loop start
-    Node *fast = head, *slow = head;
+    Node * fast = head; 
+    Node * slow = head;
     while (fast->next != nullptr)
     {
         slow = slow->next;
@@ -77,7 +86,7 @@ int LinkedListExtended::ReturnLoopStart() const
 void LinkedListExtended::Print(std::ostream &out) const
 {
     int loopstart = ReturnLoopStart();
-    Node *curr = head;
+    Node * curr = head;
 
     while (curr != tail)
     {
@@ -100,18 +109,16 @@ int main()
     list.Append(3);
     list.Append(4);
     list.Append(5);
-    std::cout << "list: " << list << std::endl;
+    std::cout << "list: " << list << "\n";
     
     list.MakeLoop(3); 
     int loopstart_data = list.ReturnLoopStart();
     
-    std::cout << "list w/ loop: " << list << std::endl;
-    std::cout << "Loop start element: " << loopstart_data << std::endl;
+    std::cout << "list w/ loop: " << list << "\n";
+    std::cout << "Loop start element: " << loopstart_data << "\n";
 
-    // Make sure polymorphism works properly
+    // Verify polymorphism works properly (unrelated to problem)
     LinkedList *b = new LinkedListExtended(list);
-    std::cout << "Print list using LinkedList *ptr: " << *b << std::endl;
+    std::cout << "Print list using LinkedList *ptr: " << *b << "\n";
     delete b;
-
-    return 0;
 }

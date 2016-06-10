@@ -1,3 +1,9 @@
+/*
+Write code to remove duplicates from an unsorted linked list.
+FOLLOW UP
+How would you solve this problem if a temporary buffer is not allowed?
+*/
+
 #include <iostream>
 #include <set>
 #include "linked_list.h"
@@ -8,7 +14,8 @@ class LinkedListExtended : public LinkedList {
         void RemoveDuplicates2(); // iterate through with 2 pointers
 };
 
-// O(n) time and O(n) space complexity using set to keep track of elements
+// Solution 1: using set to keep track of duplicate elements
+// O(n) time and O(n) space complexity
 void LinkedListExtended::RemoveDuplicates()
 {
     std::set<int> set;
@@ -32,6 +39,7 @@ void LinkedListExtended::RemoveDuplicates()
     tail = prev; // update tail in case we deleted it
 }
 
+// Solution 2: Use 2 pointers (current and trailer that checks up to current)
 // O(n^2) time and O(1) space complexity using 2 pointers
 void LinkedListExtended::RemoveDuplicates2()
 {
@@ -67,15 +75,15 @@ int main()
     std::cout << "list: " << list << std::endl; // should have [0 1 2 3 3 2 1]
     
     list.RemoveDuplicates(); // Use set
-    std::cout << "list.RemoveDuplicates(): " << list << std::endl; // [0 1 2 3]
+    std::cout << "list.RemoveDuplicates(): " << list << "\n"; // [0 1 2 3]
     
     list.Append(3);
     list.Append(2);
     list.Append(1);
-    std::cout << "list: " << list << std::endl; // should have [0 1 2 3 3 2 1]
+    std::cout << "list: " << list << "\n"; // should have [0 1 2 3 3 2 1]
     
     list.RemoveDuplicates2(); // Use 2 pointers
-    std::cout << "list.RemoveDuplicates2(): " << list << std::endl; // [0 1 2 3]
+    std::cout << "list.RemoveDuplicates2(): " << list << "\n"; // [0 1 2 3]
 
     return 0;
 }

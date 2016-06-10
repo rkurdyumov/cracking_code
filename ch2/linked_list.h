@@ -1,7 +1,6 @@
 #ifndef LINKED_LIST_H
 #define LINKED_LIST_H
 
-
 class LinkedList
 {
     public:
@@ -11,7 +10,7 @@ class LinkedList
             Node *next = nullptr;
         };
 
-        LinkedList();
+        LinkedList() {}
         LinkedList(const LinkedList &list);
         virtual ~LinkedList(); // in case we destroy polymorphic object
         LinkedList & operator=(LinkedList other);
@@ -36,8 +35,8 @@ class LinkedList
 
     protected:       
         // Protected so that derived class can modify these directly
-        Node *head;
-        Node *tail; // allows O(1) append
+        Node *head = nullptr;
+        Node *tail = nullptr; // allows O(1) append
 
     private:
         void swap(LinkedList &other);
