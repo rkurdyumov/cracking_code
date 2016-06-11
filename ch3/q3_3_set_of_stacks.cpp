@@ -1,3 +1,17 @@
+/*
+Imagine a (literal) stack of plates. If the stack gets too high, it might 
+topple. Therefore, in real life, we would likely start a new stack when the 
+previous stack exceeds some threshold. Implement a data structure SetOfStacks 
+that mimics this. SetOfStacks should be composed of several stacks, and should 
+create a new stack once the previous one exceeds capacity. SetOfStacks.push() 
+and SetOfStacks.pop() should behave identically to a single stack (that is, 
+pop() should return the same values as it would if there were just a single 
+stack).
+FOLLOW UP
+Implement a function popAt(int index) which performs a pop operation on a 
+specific sub-stack.
+*/
+
 #include <iostream>
 #include <cassert>
 #include <stack>
@@ -8,7 +22,7 @@
 // The user can pop from the individual stacks.  The design allows for the stacks
 // (other than the last) to be below full capacity, but they get deleted when they 
 // are empty.  This avoids the rollover system (which is O(n) worst case time 
-// complexity) for popping from stack #1 (where n = number of stacks).
+// complexity) for popping from an early stack (where n = number of stacks).
 class SetOfStacks
 {
     public:
@@ -78,10 +92,10 @@ class SetOfStacks
 // Implementation #2: set of stacks that appear as 1 monolithic stack to the user.
 // The user can pop from the individual stacks.  The design uses a rollover method,
 // so that stacks (other than the last) are always at full capacity.  This method
-// has O(n) worst case time complexity for popping from the 1st stack (where n = 
+// has O(n) worst case time complexity for popping from an early stack (where n = 
 // number of stacks) but is more appropriate when the user expects the non-last
 // stacks to be always full. We also need to use a deque instead of a stack since
-// we need access to the bottom element.
+// we need access to the bottom element of each stack.
 class SetOfStacksWithRollover
 {
     public:
@@ -173,43 +187,43 @@ int main()
     // Test implementation with no rollover
     SetOfStacks stack_set(3);
 
+    std::cout << "**** Test stack set without rollover ****\n";
     for (int i = 0; i < 7; ++i) {
         stack_set.Push(i);
         std::cout << i << "<--";
     }
-    std::cout << "**** Test stack set without rollover ****" << std::endl;
-    std::cout << "top" << std::endl;
+    std::cout << "top\n";
 
     for (int i = 0; i < 7; ++i) {
         int value = stack_set.Top();
         stack_set.Pop();
-        std::cout << "Popping elem " << value << std::endl;
+        std::cout << "Popping elem " << value << "\n";
     }
 
-    std::cout << "Number of stacks: " << stack_set.NumStacks() << std::endl;
-    std::cout << "Is stack set empty? " << stack_set.IsEmpty() << std::endl;
+    std::cout << "Number of stacks: " << stack_set.NumStacks() << "\n";
+    std::cout << "Is stack set empty? " << stack_set.IsEmpty() << "\n";
 
     for (int i = 0; i < 7; ++i) {
         stack_set.Push(i);
         std::cout << i << "<--";
     }
-    std::cout << "top" << std::endl;
-    std::cout << "Number of stacks: " << stack_set.NumStacks() << std::endl;
+    std::cout << "top\n";
+    std::cout << "Number of stacks: " << stack_set.NumStacks() << "\n";
    
     int value;
     // [ 0 1 2 | 3 4 5 | 6 ] <-- top
     for (int i = 0; i < 5; ++i)
     {
         value = stack_set.PopAt(0);
-        std::cout << "Popping elem " << value << " from stack 0" << std::endl;
+        std::cout << "Popping elem " << value << " from stack 0\n";
     }
     // [ 3 | 6]
     value = stack_set.PopAt(1);
-    std::cout << "Popping elem " << value << " from stack 1" << std::endl;
+    std::cout << "Popping elem " << value << " from stack 1\n";
     
     // [ 3 ]
     stack_set.Push(2); stack_set.Push(1); stack_set.Push(0);
-    std::cout << "Pushing [2 1 0]. Num stacks: " << stack_set.NumStacks()  << std::endl;
+    std::cout << "Pushing [2 1 0]. Num stacks: " << stack_set.NumStacks() << "\n";
     
     // [ 3 2 1 | 0 ]
 
@@ -217,21 +231,20 @@ int main()
     // Test implementation with rollover
     SetOfStacksWithRollover stack_set2(2);
 
+    std::cout << "\n**** Test stack set with rollover ****\n";
     for (int i = 0; i < 5; ++i) {
         stack_set2.Push(i);
         std::cout << i << "<--";
     }
-    std::cout << "top" << std::endl;
+    std::cout << "top\n";
 
     // [0 1 | 2 3 | 4] <-- top
     for (int i = 0; i < 5; ++i)
     {
         int value = stack_set2.PopAt(0);
-        std::cout << "Popping elem " << value << " from stack 0" << std::endl;
+        std::cout << "Popping elem " << value << " from stack 0\n";
     }
 
-    std::cout << "Number of stacks: " << stack_set2.NumStacks() << std::endl;
-    std::cout << "Is stack set empty? " << stack_set2.IsEmpty() << std::endl;
-
-    return 0;
+    std::cout << "Number of stacks: " << stack_set2.NumStacks() << "\n";
+    std::cout << "Is stack set empty? " << stack_set2.IsEmpty() << "\n";
 }

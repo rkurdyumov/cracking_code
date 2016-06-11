@@ -1,6 +1,19 @@
+/*
+Write a program to sort a stack in ascending order. You should not make any 
+assumptions about how the stack is implemented. The following are the only 
+functions that should be used to write this program: 
+push | pop | peek | isEmpty.
+*/
+
 #include <iostream>
 #include <stack>
 
+// Iterative solution: use a sorted second stack. If we pop a value from the
+// original stack that's too small for the second stack, move values from the
+// second stack to the original stack until we find room for that value. Then 
+// push that value on the second stack, transfer the moved values back, and 
+// proceed.
+// Time complexity: O(n^2), space complexity: O(n)
 void Sort(std::stack<int> &s)
 {
     std::stack<int> other;
@@ -17,34 +30,36 @@ void Sort(std::stack<int> &s)
     s = other;
 }
 
+// Recursive solution: start from base case, where all elements have been
+// popped off.  Insert the last element to be popped back on.  Then try to 
+// insert the 2nd to last.  If it's too small, pop off the top stack element
+// and insert successfully.  The logic easily generalizes: If the current 
+// popped off element is too small, recursively pop from the stack until we can
+// push it on.
+// Time complexity: O(n^2), space complexity: O(1) [O(n) call stack]
 void Insert(std::stack<int> &s, int curr)
 {
-    if (s.empty())
-    {
+    if (s.empty() || curr > s.top())
         s.push(curr);
-        return;
-    }
-    int top = s.top();
-    if (curr < top)
+    else
     {
+        int top = s.top();
         s.pop();
         Insert(s, curr);
         s.push(top);
     }
-    else
-        s.push(curr);
 }
 
 void SortRecursive(std::stack<int> &s)
 {
-    if (!s.empty())
-    {
-        int value = s.top();
-        s.pop();
-        SortRecursive(s);
-        Insert(s, value);
-    }
+    if (s.empty())
+        return;
+    int value = s.top();
+    s.pop();
+    SortRecursive(s);
+    Insert(s, value);
 }
+
 
 int main()
 {
@@ -58,7 +73,7 @@ int main()
         s2.push(arr[i]);
         std::cout << arr[i] << "<-";
     }
-    std::cout << "top" << std::endl;
+    std::cout << "top\n";
 
     Sort(s1);
     SortRecursive(s2);
@@ -71,7 +86,7 @@ int main()
         std::cout << "->" << value;
         s1.pop();
     }
-    std::cout << std::endl;
+    std::cout << "\n";
 
     // Result of sort using implicit recursive call stack:
     std::cout << "Recursive sort: top";
@@ -81,7 +96,7 @@ int main()
         std::cout << "->" << value;
         s2.pop();
     }
-    std::cout << std::endl;
+    std::cout << "\n";
 
 
     return 0; 

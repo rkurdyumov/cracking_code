@@ -4,14 +4,9 @@
 class Stack
 {
     public:
-        struct Node {
-            int data;
-            Node *next = nullptr;
-        };
-
-        Stack();
+        Stack() {}
         Stack(const Stack &stack);
-        ~Stack();
+        virtual ~Stack();
         Stack & operator=(Stack other);
         friend std::ostream & operator<<(std::ostream &out, const Stack &stack);
 
@@ -23,7 +18,11 @@ class Stack
         const int & Top() const;
         
     protected:
-        Node *top;
+        struct Node {
+            int data;
+            Node *next = nullptr;
+        };
+        Node *top = nullptr;
 
     private:
         Node * Begin();

@@ -2,19 +2,19 @@
 #include <assert.h>
 #include "queue_arr.h"
 
-Queue::Queue(int maxsize): max_size(maxsize), front(-1), count(0)
+Queue::Queue(size_t maxsize): max_size(maxsize), front(-1), count(0)
 {
     assert(max_size > 0);
     data = new int[max_size];
 }
 
-Queue::Queue(const Queue &queue) 
+Queue::Queue(const Queue & queue) 
 {
     data = new int[queue.max_size];
     front = queue.front;
     count = queue.count;
     max_size = queue.max_size;
-    for (int i = 0; i < count; ++i)
+    for (size_t i = 0; i < count; ++i)
     {
         int index = (front + i)%max_size;
         data[index] = queue.data[index]; 
@@ -26,7 +26,7 @@ Queue::~Queue()
     delete[] data;
 }
 
-void Queue::swap(Queue &other)
+void Queue::swap(Queue & other)
 {
     std::swap(data, other.data);
     std::swap(max_size, other.max_size);
@@ -42,7 +42,7 @@ Queue & Queue::operator=(Queue other)
     return *this;
 }
 
-std::ostream & operator<<(std::ostream &out, const Queue &queue)
+std::ostream & operator<<(std::ostream & out, const Queue & queue)
 {
     queue.Print(out);
     return out;
@@ -92,10 +92,10 @@ const int & Queue::Front() const
 
 void Queue::Grow()
 {
-    int old_max_size = max_size;
+    size_t old_max_size = max_size;
     max_size *= 2;
-    int *new_data = new int[max_size];
-    for (int i = 0; i < count; ++i)
+    int * new_data = new int[max_size];
+    for (size_t i = 0; i < count; ++i)
     {
         int index = (front + i)%old_max_size;
         new_data[index] = data[index]; 
@@ -104,10 +104,10 @@ void Queue::Grow()
     data = new_data;
 }
 
-void Queue::Print(std::ostream &out) const
+void Queue::Print(std::ostream & out) const
 {
     out << "front-->";
-    for (int i = 0; i < count; ++i)
+    for (size_t i = 0; i < count; ++i)
     {
         int index = (front + i)%max_size;
         out << data[index] << "-->";

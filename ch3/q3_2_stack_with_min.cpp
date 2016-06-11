@@ -1,8 +1,15 @@
+/*
+How would you design a stack which, in addition to push and pop, also has a 
+function min which returns the minimum element? Push, pop and min should all 
+operate in O(1) time.
+*/
+
 #include <iostream>
 #include <cassert>
 #include <stack>
 #include <limits>
 
+// Solution: Maintain a second (smaller) stack that only stores new mins
 class StackWithMin
 {
     private:
@@ -19,7 +26,7 @@ class StackWithMin
         void Push(int value)
         {
             data_stack.push(value);
-            if (value <= Min())
+            if (value <= Min()) // store duplicate new mins
                 min_stack.push(value);
         }
 
@@ -57,13 +64,13 @@ int main()
     stack.Push(1); std::cout << stack.Top() << "<--";
     stack.Push(3); std::cout << stack.Top() << "<--";
     stack.Push(0); std::cout << stack.Top() << "<--";
-    stack.Push(6); std::cout << stack.Top() << "<--top" << std::endl;
+    stack.Push(6); std::cout << stack.Top() << "<--top\n";
 
     while (!stack.IsEmpty())
     {
         int value = stack.Top();
         stack.Pop();
-        std::cout << "pop: " << value << ", min = " << stack.Min() << std::endl;
+        std::cout << "pop: " << value << ", min = " << stack.Min() << "\n";
     }
 }
 

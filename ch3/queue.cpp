@@ -2,10 +2,6 @@
 #include <assert.h>
 #include "queue.h"
 
-Queue::Queue(): front(nullptr), back(nullptr)
-{
-}
-
 Queue::Queue(const Queue &queue) : Queue()
 {
     for (const Node *n = queue.Begin(); n != queue.End(); n = n->next)
@@ -92,6 +88,3 @@ void Queue::Print(std::ostream &out) const
         out << n->data << "-->";
     out << "back";
 }
-
-
-

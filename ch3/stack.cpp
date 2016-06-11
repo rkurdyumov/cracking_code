@@ -2,10 +2,6 @@
 #include <assert.h>
 #include "stack.h"
 
-Stack::Stack(): top(nullptr)
-{
-}
-
 Stack::Stack(const Stack &stack) : Stack()
 {
     for (const Node *n = stack.Begin(); n != stack.End(); n = n->next)

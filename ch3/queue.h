@@ -4,16 +4,11 @@
 class Queue
 {
     public:
-        struct Node {
-            int data;
-            Node *next = nullptr;
-        };
-
-        Queue();
+        Queue() {}
         Queue(const Queue &queue);
-        ~Queue();
+        virtual ~Queue();
         Queue & operator=(Queue other);
-        friend std::ostream & operator<<(std::ostream &out, const Queue &queue);
+        friend std::ostream & operator<<(std::ostream & out, const Queue & queue);
 
         bool IsEmpty() const;
         void Dequeue();
@@ -23,16 +18,20 @@ class Queue
         const int & Front() const;
         
     protected:
-        Node *front;
-        Node *back;
+        struct Node {
+            int data;
+            Node * next = nullptr;
+        };
+        Node * front = nullptr;
+        Node * back = nullptr;
 
     private:
         Node * Begin();
         Node * End();
         const Node * Begin() const;
         const Node * End() const;
-        void swap(Queue &other);
-        virtual void Print(std::ostream &out) const;
+        void swap(Queue & other);
+        virtual void Print(std::ostream & out) const;
 };
 
 #endif
