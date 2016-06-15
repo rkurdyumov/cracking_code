@@ -1,11 +1,17 @@
+/*
+You are given two sorted arrays, A and B, and A has a large enough buffer at 
+the end to hold B. Write a method to merge B into A in sorted order.
+*/
+
 #include <iostream>
 
-// Assume A[] has enough room for merging A and B
+// Assume A[] has enough room for merging A and B. Merge from the back, 
+// comparing each element from A and B.
 void MergeSortedArrays(int A[], int nA, int B[], int nB)
 {
-    int iA = nA - 1;
-    int iB = nB - 1;
-    int iM = nA + nB - 1;
+    int iA = nA - 1; // last A element index
+    int iB = nB - 1; // last B element index
+    int iM = nA + nB - 1; // last merged index
 
     while (iA >= 0 && iB >= 0)
     {
@@ -25,16 +31,19 @@ void PrintArray(int array[], int n)
     {
         std::cout << array[i] << " ";
     }
+    std::cout << "\n";
 }
 
 int main()
 {
-    int A[7] = {1, 2, 3, 7};
-    int B[]  = {0, 4, 6};
+    const int A_SIZE = 4;
+    const int B_SIZE = 3;
+    
+    int A[A_SIZE + B_SIZE] = {1, 2, 3, 7};
+    int B[B_SIZE]  = {0, 4, 6};
 
-    std::cout << "A = "; PrintArray(A, 4); std::cout << std::endl;
-    std::cout << "B = "; PrintArray(B, 3); std::cout << std::endl;
-    MergeSortedArrays(A, 4, B, 3);
-    std::cout << "Merge = "; PrintArray(A, 7); std::cout << std::endl;
-
+    std::cout << "A = "; PrintArray(A, A_SIZE);
+    std::cout << "B = "; PrintArray(B, B_SIZE);
+    MergeSortedArrays(A, A_SIZE, B, B_SIZE);
+    std::cout << "Merge = "; PrintArray(A, A_SIZE + B_SIZE);
 }

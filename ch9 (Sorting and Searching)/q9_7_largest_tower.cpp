@@ -1,7 +1,22 @@
+/*
+A circus is designing a tower routine consisting of people standing atop one 
+another's shoulders. For practical and aesthetic reasons, each person must be 
+both shorter and lighter than the person below him or her. Given the heights 
+and weights of each person in the circus, write a method to compute the largest 
+possible number of people in such a tower.
+EXAMPLE:
+Input (ht, wt): (65, 100) (70, 150) (56, 90) (75, 190) (60, 95) (68, 98)
+Output: The longest tower is length 6 and includes from top to bottom: (56, 90)
+(60,95) (68,98) (70,150) (75,190)
+
+NOTE: The input was slightly modified from the one in the book to cover more
+edge conditions in the code.
+*/
+
 #include <iostream>
 #include <vector>
-#include <algorithm>
-#include <iomanip> // for setw()
+#include <algorithm> // std::sort
+#include <iomanip> // std::setw
 
 struct Person
 {
@@ -18,7 +33,8 @@ bool CompareHeightsThenWeights(const Person &p1, const Person &p2)
 }
 
 // Find the first element larger than or equal to input value
-int BinarySearchSubseq(std::vector<int> &last_subseq_values, int low, int high, int value)
+int BinarySearchSubseq(std::vector<int> & last_subseq_values, int low, int high, 
+        int value)
 {
     while (high > low)
     {
@@ -31,11 +47,40 @@ int BinarySearchSubseq(std::vector<int> &last_subseq_values, int low, int high, 
     return high;
 }
 
+// Helper function to assemble the indices of the longest possible tower of 
+// people ordered tallest->smallest
+std::vector<int> MakeLongestSubseq(std::vector<int> & last_subseq_indices, 
+        std::vector<int> & prev_indices)
+{
+    size_t length = last_subseq_indices.size() - 1;
+    std::vector<int> longest_subseq(length);
+    size_t curr_index = last_subseq_indices[length];
+    longest_subseq[0] = curr_index;
+    for (size_t i = 1; i < length; ++i)
+    {
+        curr_index = prev_indices[curr_index];
+        longest_subseq[i] = curr_index;
+    }
+    return longest_subseq; // ordered tallest->shortest
+}
+
 // Use a standard "find longest subsequence" algorithm on weights after sorting
-// by heights to find the max number of people in a tower
+// by heights to find the max number of people in a tower.  This code is more
+// complicated because we also try to store the order of people in the tower, 
+// not just the maximum tower size.
+//
+// Basically, there are 4 vectors used, shown below with their state at the end 
+// of the algorithm:
+// people:             (56,90) (60,95) (65,100) (68,98) (70,150) (75,190)
+// index (implicit):   0       1       2        3       4        5
+// prev_index:         -1      0       1        1       3        4
+//
+// last_subseq_index:   L1:0    L2:1    L3:3     L4:4     L5:5
+// last_subseq_value:  (56,90) (60,95) (68,98)  (70,150) (75,190)
 std::vector<int> MaxTower(std::vector<Person> &people)
 {
-    if (people.empty()) return std::vector<int>();
+    if (people.empty()) 
+        return std::vector<int>();
 
     // Sort by heights (and equal heights by weights)
     std::sort(people.begin(), people.end(), CompareHeightsThenWeights);
@@ -80,23 +125,13 @@ std::vector<int> MaxTower(std::vector<Person> &people)
             last_subseq_index[index] = i;
         }
     }
-
-    int length = last_subseq_value.size() - 1;
-    std::vector<int> longest_subseq(length);
-    int curr_index = last_subseq_index[last_subseq_index.size() - 1];
-    longest_subseq[0] = curr_index;
-    for (int i = 1; i < length; ++i)
-    {
-        curr_index = prev_index[curr_index];
-        longest_subseq[i] = curr_index;
-    }
-    return longest_subseq; // ordered tallest->shortest
+    return MakeLongestSubseq(last_subseq_index, prev_index);
 }
 
 int main()
 {
     std::vector<Person> people;
-    people.push_back(Person(60,100));
+    people.push_back(Person(65,100));
     people.push_back(Person(70,150));
     people.push_back(Person(56,90));
     people.push_back(Person(75,190));
@@ -110,7 +145,5 @@ int main()
     for (int i = 0; i < size; ++i)
         std::cout << "(" << people[tower[i]].height << "," << 
             people[tower[i]].weight << ")->";
-    std::cout << "top" << std::endl;
-
-    return 0;
+    std::cout << "top\n";
 }
