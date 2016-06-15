@@ -9,5 +9,6 @@ necessary.
 
 The code uses aspects of the C++11 standard, so it should be compiled with the
 appropriate flag. For g++:
-
-    `g++ -std=c++11 source_file.cpp`
+```
+g++ -std=c++11 source_file.cpp
+```
