@@ -1,96 +1,128 @@
+/*
+Imagine a robot sitting on the upper left hand corner of an NxN grid. The robot 
+can only move in two directions: right and down. How many possible paths are 
+there for the robot?
+FOLLOW UP
+Imagine certain squares are "off limits", such that the robot can not step on 
+them. Design an algorithm to get all possible paths for the robot.
+*/
+
 #include <iostream>
 #include <vector>
+#include <iomanip> // std::setw
 
-static const int M = 4;
+static const int N = 4; // grid dimension
 
-// Basic dynamic-programming that works for small (n choose k)
+// Basic dynamic-programming approach that works for small (n choose k)
+// Based on:
+// C(n, k) = n! / (n-k)! * k!
+//         = [n * (n-1) *....* 1]  / [ ( (n-k) * (n-k-1) * .... * 1) * 
+//                                             ( k * (k-1) * .... * 1 ) ]
+// After simplifying, we get
+// C(n, k) = [n * (n-1) * .... * (n-k+1)] / [k * (k-1) * .... * 1]
+//
+// Also, C(n, k) = C(n, n-k)  // we can change r to n-r if r > n-r 
+// See: 
+// www.geeksforgeeks.org/space-and-time-efficient-binomial-coefficient
 int Combination(int n, int k)
 {
-    if (k*2 > n) k = n-k; // symmetry
-    if (k == 0) return 1;
+    if (k > n-k) k = n-k;
     
-    int result = n;
-    for (int i = 2; i <= k; ++i)
+    int result = 1;
+    for (int i = 0; i < k; ++i)
     {
-        result *= (n-i-1);
-        result /= i;
+        result *= (n-i);
+        result /= (i+1);
     }
     return result;
 }
 
-void GetPathsRecursive(bool free_grid[M][M], std::vector<std::vector<bool>> &paths, 
-        int curr_path, int x, int y)
+// Solution: recursively check if we can go right and/or down. If we get to the
+// end, we have a valid path so add to it our list.  After returning from each
+// recursive call, we erase the element we just added so we can reuse the same
+// curr_path variable (avoids allocating a new curr_path on each recursive call).
+void GetPathsRecursive(bool free_grid[N][N], std::vector<std::vector<bool>> & paths, 
+        std::vector<bool> & curr_path, int x, int y)
 {
-    if (x == M-1 && y == M-1) return;
-    bool try_right = false, try_down = false;
+    if (x == N-1 && y == N-1)
+        paths.push_back(curr_path);
     
-    std::vector<bool> path_before_split = paths[curr_path];
-
-    if (y < M-1 && free_grid[x][y+1]) // try right
+    if (y < N-1 && free_grid[x][y+1]) // try right
     {
-        paths[curr_path].push_back(true);
+        curr_path.push_back(true); 
         GetPathsRecursive(free_grid, paths, curr_path, x, y+1);
-        try_right = true;
+        curr_path.erase(curr_path.end()-1);
     }
-    if (x < M-1 && free_grid[x+1][y]) // try down
+    if (x < N-1 && free_grid[x+1][y]) // try down
     {
-        if (try_right) {
-            paths.push_back(std::vector<bool>(path_before_split));
-            curr_path = paths.size() - 1;
-        }
-        paths[curr_path].push_back(false);
+        curr_path.push_back(false);
         GetPathsRecursive(free_grid, paths, curr_path, x+1, y);
-        try_down = true;
+        curr_path.erase(curr_path.end()-1);
     }
-    if (!try_right && !try_down)
-        paths[curr_path].erase(paths[curr_path].end() - 1);
-    return;
 }
 
-std::vector<std::vector<bool>> GetPaths(bool free_grid[M][M])
+std::vector<std::vector<bool>> GetPaths(bool free_grid[N][N])
 {
     std::vector<std::vector<bool>> paths;
-    paths.push_back(std::vector<bool>());
+    std::vector<bool> curr_path;
    
     // Start in upper left corner with empty path, recursively find all valid paths
-    GetPathsRecursive(free_grid, paths, 0, 0, 0);
-    
-    // Remove incomplete solutions
-    // We have 2*M-2 total steps, and M-1 times to choose right that uniquely 
-    // determine the path, so (2*M-2) choose (M-1) steps for a valid path
-    int num_steps = Combination(2*M-2, M-1);
-    for (std::vector<std::vector<bool>>::iterator it = paths.begin(); it != paths.end(); )
-    {
-        if ((int)it->size() < num_steps)
-            paths.erase(it);
-        else
-            ++it;
-    }
+    GetPathsRecursive(free_grid, paths, curr_path, 0, 0);
     return paths;
 }
 
 void PrintPaths(std::vector<std::vector<bool>> &paths)
 {
-    for (size_t i = 0; i < paths.size(); ++i)
+    for (size_t r = 0; r < paths.size(); ++r)
     {
-        for (size_t j = 0; j < paths[i].size(); ++j)
+        for (size_t c = 0; c < paths[r].size(); ++c)
         {
-            std::cout << ((paths[i][j]) ? ("R") : ("D"));
+            std::cout << ((paths[r][c]) ? ("R") : ("D"));
         }
-        std::cout << std::endl;
+        std::cout << "\n";
+    }
+}
+
+void PrintGrid(bool free_grid[N][N])
+{
+    for (size_t r = 0; r < N; ++r)
+    {
+        for (size_t c = 0; c < N; ++c)
+        {
+            std::cout << std::setw(2) << free_grid[r][c];
+        }
+        std::cout << "\n";
     }
 }
 
 int main()
 {
-    bool free_grid[M][M] = {{1, 1, 1, 0}, 
+    // Part 1: verify that there are (2N-2) choose (N_1) possible paths when
+    // all squares are free
+    bool all_free_grid[N][N] = {{1, 1, 1, 1}, 
+                                {1, 1, 1, 1}, 
+                                {1, 1, 1, 1}, 
+                                {1, 1, 1, 1}};
+
+    std::vector<std::vector<bool>> all_paths = GetPaths(all_free_grid);
+    
+    std::cout << "Grid with all squares free:\n";
+    PrintGrid(all_free_grid);
+    std::cout << "We expect " << Combination(2*N-2, N-1) << " paths. We have: " <<
+        all_paths.size() << " paths.\n";
+
+    // Part 2: verify that recursive algorithm works with some squares off limits
+    bool free_grid[N][N] = {{1, 1, 1, 0}, 
                             {1, 0, 1, 1}, 
                             {1, 1, 1, 1}, 
                             {1, 1, 0, 1}};
     
+    std::cout << "\nCustom grid:\n";
+    PrintGrid(free_grid);
+ 
     std::vector<std::vector<bool>> paths = GetPaths(free_grid);
+
+    std::cout << "Starting from upper left corner, paths are:\n";
     PrintPaths(paths);
-    
-    return 0;
 }
 

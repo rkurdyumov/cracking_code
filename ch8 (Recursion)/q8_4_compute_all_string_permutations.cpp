@@ -1,7 +1,16 @@
+/*
+Write a method to compute all permutations of a string.
+*/
+
 #include <iostream>
 #include <string>
 #include <vector>
 
+// Solution: Remove first character and recursively permute the remainder.
+// O(n!) time complexity, O(n!) space complexity
+// Base case: empty string.  Next, insert last character before the empty 
+// string.  Then, insert 2nd to last character before and after the existing
+// character, and so on.
 void StringPermutations(std::vector<std::string> &perms, std::string str)
 {
     if (str.empty())
@@ -27,10 +36,10 @@ void StringPermutations(std::vector<std::string> &perms, std::string str)
 
 void PrintStringPermutations(std::vector<std::string> &all)
 {
-    std::cout << "There are " << all.size() << " permutations:" << std::endl;
+    std::cout << "There are " << all.size() << " permutations:\n";
     for (size_t i = 0; i < all.size(); ++i)
         std::cout << all[i] << " ";
-    std::cout << std::endl;
+    std::cout << "\n";
 }
 
 int main()
@@ -40,6 +49,4 @@ int main()
     std::vector<std::string> perms;
     StringPermutations(perms, str);
     PrintStringPermutations(perms);
-
-    return 0;
 }

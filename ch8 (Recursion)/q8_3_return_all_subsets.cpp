@@ -1,6 +1,12 @@
+/*
+Write a method that returns all subsets of a set.
+*/
+
 #include <iostream>
 #include <vector>
 
+// Recursive solution: Start with the empty set. Then for each element, clone
+// the existing subsets (including the empty set) and add this element to them.
 void GetSubsets(std::vector<std::vector<int>> &subsets, int array[], int index)
 {
     // Base case: create empty set
@@ -23,7 +29,6 @@ void GetSubsets(std::vector<std::vector<int>> &subsets, int array[], int index)
     }
 }
 
-
 void PrintSubsets(std::vector<std::vector<int>> &subsets)
 {
     std::cout << "There are " << subsets.size() << " subsets:" << std::endl; 
@@ -34,7 +39,7 @@ void PrintSubsets(std::vector<std::vector<int>> &subsets)
         {
             std::cout << subsets[i][j] << " ";
         }
-        std::cout << "]" << std::endl;
+        std::cout << "]\n";
     }
 }
 
@@ -44,6 +49,4 @@ int main()
     std::vector<std::vector<int>> subsets;
     GetSubsets(subsets, array, 3);
     PrintSubsets(subsets);
-
-    return 0;
 }
