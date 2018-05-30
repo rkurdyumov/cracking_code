@@ -23,6 +23,7 @@ class Graph
         // BFS returns vector pair <vertex_id, parent of this vertex>
         std::pair<std::vector<size_t>, std::vector<size_t>> BreadthFirstSearch(size_t start_id) const;
         std::vector<size_t> DepthFirstSearch(size_t start_id, bool recursive = false) const;
+        std::vector<size_t> ShortestPathDijkstra(size_t start_id, size_t end_id ) const;
 
         template <typename U>
         friend std::ostream & operator<<(std::ostream & out, const Graph<U> & g);

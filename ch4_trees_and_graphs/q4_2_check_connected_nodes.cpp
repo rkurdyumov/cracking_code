@@ -55,15 +55,15 @@ int main()
     // https://en.wikipedia.org/wiki/Depth-first_search
     MyGraph<std::string> g(true);
 
-    std::pair<size_t, size_t> ids_A_B = g.AddEdgeAndVertices("A", "B");
-    std::pair<size_t, size_t> ids_C_G = g.AddEdgeAndVertices("C", "G");
-    std::pair<size_t, size_t> ids_F_E = g.AddEdgeAndVertices("F", "E");
+    std::pair<size_t, size_t> ids_A_B = g.AddEdgeAndVertices("A", "B"); // A-->B
+    std::pair<size_t, size_t> ids_C_G = g.AddEdgeAndVertices("C", "G"); // C-->G
+    std::pair<size_t, size_t> ids_F_E = g.AddEdgeAndVertices("F", "E"); // F-->E
     size_t id_D = g.AddVertex("D");
 
-    g.AddEdge(ids_A_B.first, ids_C_G.first); // A<-->C
-    g.AddEdge(ids_A_B.first, ids_F_E.second); // A<-->E
-    g.AddEdge(ids_A_B.second, id_D); // B<-->D
-    g.AddEdge(ids_A_B.second, ids_F_E.first); // B<-->F
+    g.AddEdge(ids_A_B.first, ids_C_G.first); // A-->C
+    g.AddEdge(ids_A_B.first, ids_F_E.second); // A-->E
+    g.AddEdge(ids_A_B.second, id_D); // B-->D
+    g.AddEdge(ids_A_B.second, ids_F_E.first); // B-->F
 
     std::cout << "str graph:\n";
     std::cout << g;

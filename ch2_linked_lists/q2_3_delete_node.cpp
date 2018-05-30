@@ -1,5 +1,5 @@
 /*
-Implement an algorithm to delete a node in the middle of a single linked list, 
+Implement an algorithm to delete a node in the middle of a singly linked list,
 given only access to that node.
 EXAMPLE
 Input: the node 'c' from the linked list a->b->c->d->e
@@ -12,20 +12,20 @@ Result: nothing is returned, but the new linked list looks like a->b->d->e
 class LinkedListExtended : public LinkedList
 {
     public:
-        void DeleteNode(Node *n);
+        void DeleteNode(Node * n);
         Node * GetNode(int data);
 };
 
 LinkedListExtended::Node * LinkedListExtended::GetNode(int data)
 {
-    for (Node *n = Begin(); n != End(); n = n->next)
+    for (Node * n = Begin(); n != End(); n = n->next)
         if (n->data == data) 
             return n;
     return nullptr;
 }
 
 // Solution: we consider all cases (delete head, tail, last node, middle node)
-void LinkedListExtended::DeleteNode(Node *n)
+void LinkedListExtended::DeleteNode(Node * n)
 {
     if (n == nullptr) 
         return;
@@ -36,7 +36,7 @@ void LinkedListExtended::DeleteNode(Node *n)
     }
     else if (n == tail) // replace tail
     {
-        Node *prev = head;
+        Node * prev = head;
         while (prev->next != tail) 
             prev = prev->next;
         prev->next = nullptr;
@@ -53,7 +53,7 @@ void LinkedListExtended::DeleteNode(Node *n)
     // be invalidated.
     else // replace middle node
     {
-        Node *next = n->next; 
+        Node * next = n->next; 
         n->data = next->data;
         n->next = next->next;
         if (next == tail) 

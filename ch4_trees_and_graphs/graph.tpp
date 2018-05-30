@@ -1,6 +1,7 @@
 #include <stdexcept> // std::out_of_range
 #include <queue> // for Breadth First Search
 #include <stack> // for Depth First Search
+#include <limits> // std::numeric_limits
 
 template <typename T>
 size_t Graph<T>::AddVertex(const T & value)
@@ -53,7 +54,7 @@ T & Graph<T>::GetVertexData(size_t vertex_id)
 template <typename T>
 std::pair<std::vector<size_t>, std::vector<size_t>> Graph<T>::BreadthFirstSearch(size_t start_id) const
 {
-    std::vector<size_t> parent(VertexCount(), -1);
+    std::vector<size_t> parent(VertexCount(), -1); // need to fix this later
     std::vector<size_t> vertex_ids(VertexCount(), -1);
     std::vector<bool> visited(VertexCount(), false);
     
@@ -119,6 +120,77 @@ std::vector<size_t> Graph<T>::DepthFirstSearch(size_t start_id, bool recursive) 
         }
     }
     return visit_order;
+}
+
+struct VertexDistancePair
+{
+    size_t vertex_id;
+    int distance;
+    VertexDistancePair(size_t id, int d) : vertex_id(id), distance(d) {}
+};
+
+struct CompareDistance
+{
+    int operator() (const VertexDistancePair & v1, const VertexDistancePair & v2)
+    {
+        return v1.distance > v2.distance;
+    }
+};
+
+template <typename T>
+std::vector<size_t> Graph<T>::ShortestPathDijkstra(size_t start_id, 
+        size_t end_id) const
+{
+    std::vector<size_t> parent(VertexCount(), -1); // need to fix this later
+    std::vector<bool> visited(VertexCount(), false);
+    std::vector<int> distances(VertexCount(), std::numeric_limits<int>::max());
+    
+    // Holds vertices still to be explored
+    // Different constructor arguments to turn priority queue into min heap
+    std::priority_queue<VertexDistancePair, std::vector<VertexDistancePair>, 
+        CompareDistance> pq; 
+    pq.push(VertexDistancePair(start_id, 0));
+    parent[start_id] = -1;
+    distances[start_id] = 0;
+    bool found = false;
+    
+    while (!pq.empty())
+    {
+        VertexDistancePair v = pq.top();
+        pq.pop();
+        size_t id = v.vertex_id;
+        std::cout << "Popped id " << id << " with value " << vertices[id].GetData() <<
+        " and distance from start of " << distances[id] << "\n";
+        if (id == end_id) 
+        {        
+            found = true;
+            break;
+        }
+        for (const OutEdge e : vertices[id].GetOutgoingEdges())
+        {
+            size_t neighbor_id = e.GetDestID();
+            int cost = e.GetCost();
+            if (distances[neighbor_id] > distances[id] + cost)
+            {
+                distances[neighbor_id] = distances[id] + cost;
+                parent[neighbor_id] = id;
+                std::cout << "Adding vertex " << vertices[neighbor_id].GetData() <<
+                " with distance from start of  " << distances[neighbor_id] << "\n";
+                pq.push(VertexDistancePair(neighbor_id, distances[neighbor_id]));
+            }
+        }
+    }
+    if (found == false)
+        return std::vector<size_t>();
+
+    std::vector<size_t> shortest_path;
+    size_t curr_id = end_id;
+    while (curr_id != -1)
+    {
+        shortest_path.push_back(curr_id);
+        curr_id = parent[curr_id];
+    }
+    return shortest_path;
 }
 
 template <typename T>

@@ -1,7 +1,7 @@
 /*
 Implement a function to check if a tree is balanced. For the purposes of this 
-question, a balanced tree is defined to be a tree such that no two leaf nodes 
-differ in distance from the root by more than one.
+question, a balanced tree is defined to be a tree such that the heights of the
+two subtrees of any node never differ by more than one.
 */
  
 #include <iostream>

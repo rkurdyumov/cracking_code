@@ -1,6 +1,10 @@
 /*
 You have two very large binary trees: T1, with millions of nodes, and T2, with 
 hundreds of nodes. Create an algorithm to decide if T2 is a subtree of T1.
+
+A tree T2 is a subtree of T1 if there exists a node n in T2 such that the
+subtree of n is identical to T2.  That is, if you cut off the tree at node n,
+the two trees would be identical.
 */
 
 #include <iostream>
@@ -88,7 +92,7 @@ bool MyBST<T>::MatchTree(typename BinarySearchTree<T>::Node * tree,
     return MatchTree(tree->left, subtree->left) && MatchTree(tree->right, subtree->right);
 }
 
-// Method 1: Substring search on pre-order traversal with null markers
+// Method 2: Substring search on pre-order traversal with null markers
 // Worst case time complexity: O(N) where N=tree size
 // Space complexity: O(N) where N=tree size
 // This method returns false if the subtree is internal to the tree (subtree

@@ -4,8 +4,12 @@ single digit. The digits are stored in reverse order, such that the 1's digit
 is at the head of the list. Write a function that adds the two numbers and 
 returns the sum as a linked list.
 EXAMPLE
-Input: (3 -> 1 -> 5), (5 -> 9 -> 2)
-Output: 8 -> 0 -> 8
+Input: (7 -> 1 -> 6) + (5 -> 9 -> 2).  That is, 617 + 295.
+Output: 2 -> 1 -> 9.  That is, 912.
+FOLLOW UP
+Supposed the digits are stored in forward order.  Repeat the above problem.
+Input: (6 -> 1 -> 7) + (2 -> 9 -> 5).  That is, 617 + 295.
+Output: 9 -> 1 -> 2.  That is, 912.
 */
 
 #include <iostream>
@@ -88,11 +92,11 @@ int main()
 {
     LinkedListExtended list1, list2;
     
-    int arr1[] = {4, 5, 6};
-    int arr2[] = {3, 4, 5, 9};
-    for (int i = 0; i < (int) (sizeof(arr1)/sizeof(*arr1)); ++i)
+    int arr1[] = {7, 1, 6};
+    int arr2[] = {5, 9, 2};
+    for (size_t i = 0; i < sizeof(arr1)/sizeof(arr1[0]); ++i)
         list1.Append(arr1[i]);
-    for (int i = 0; i < (int) (sizeof(arr2)/sizeof(*arr2)); ++i)
+    for (size_t i = 0; i < sizeof(arr2)/sizeof(arr2[0]); ++i)
         list2.Append(arr2[i]);
     std::cout << "list1, list2: " << list1 << ", " << list2 << "\n";
 

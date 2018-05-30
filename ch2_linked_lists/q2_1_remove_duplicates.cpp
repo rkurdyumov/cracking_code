@@ -27,14 +27,14 @@ void LinkedListExtended::RemoveDuplicates()
         {
             prev->next = curr->next;
             delete curr;
-            curr = prev->next;
+            curr = prev;
         }
         else
         {
             set.insert(curr->data);
             prev = curr;
-            curr = curr->next;
         }
+        curr = curr->next;
     }
     tail = prev; // update tail in case we deleted it
 }

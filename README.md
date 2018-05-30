@@ -1,4 +1,4 @@
-This project includes my C++ solutions to Cracking the Coding Interview (4th
+This project includes my C++ solutions to Cracking the Coding Interview (5th
 edition), along with helper classes and some additional related problems.
 
 Each solution includes the problem description from the book, as well as helpful

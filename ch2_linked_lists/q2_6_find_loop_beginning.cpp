@@ -1,6 +1,6 @@
 /*
-Given a circular linked list, implement an algorithm which returns node at the 
-begin ning of the loop.
+Given a circular linked list, implement an algorithm which returns the node at 
+the beginning of the loop.
 DEFINITION
 Circular linked list: A (corrupt) linked list in which a node's next pointer 
 points to an earlier node, so as to make a loop in the linked list.
@@ -116,9 +116,4 @@ int main()
     
     std::cout << "list w/ loop: " << list << "\n";
     std::cout << "Loop start element: " << loopstart_data << "\n";
-
-    // Verify polymorphism works properly (unrelated to problem)
-    LinkedList *b = new LinkedListExtended(list);
-    std::cout << "Print list using LinkedList *ptr: " << *b << "\n";
-    delete b;
 }

@@ -1,13 +1,13 @@
 /*
 Implement an algorithm to determine if a string has all unique characters. What 
-if you can not use additional data structures?
+if you cannot use additional data structures?
 */
 
 #include <iostream>
 #include <string>
 #include <cstdint>
 
-// Solution 1: Use additional boolean array, O(N) space where N = alphabet size
+// Solution 1: Use additional boolean array, O(N) space where N = alphabet size.
 static bool hasUniqueAsciiChars(std::string str)
 {
     bool ascii_chars[256] = {false};
@@ -20,7 +20,7 @@ static bool hasUniqueAsciiChars(std::string str)
     return true;
 }
 
-// Solution 2: No additional storage, but can only differentiate among 32 chars
+// Solution 2: No additional storage, but can only differentiate among 32 chars.
 // Note that because we use uint32_t for used_letters, this function will return 
 // false for the same uppercase and lowercase letter (but not other characters) 
 // since they're exactly separated by 32 ASCII codes and will therefore map to 

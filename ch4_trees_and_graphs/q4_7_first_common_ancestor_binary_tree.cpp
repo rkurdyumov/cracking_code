@@ -145,10 +145,13 @@ int main()
 
     BinaryTree bt(array, sizeof(array)/sizeof(array[0]));
     bt.Print(std::cout);
+    //      4
+    //    2   6 
+    //   1 3 5 7
 
-    BinaryTree::Node * n1 = bt.root->left->left;
-    BinaryTree::Node * n2 = bt.root->right->right;
-    BinaryTree::Node * n3 = bt.root->right->left;
+    BinaryTree::Node * n1 = bt.root->left->left; // 1
+    BinaryTree::Node * n2 = bt.root->right->right; // 7
+    BinaryTree::Node * n3 = bt.root->right->left; // 5
 
     BinaryTree::Node * anc = bt.FirstCommonAncestorUsingParent(n1, n2);
     BinaryTree::Node * anc2 = bt.FirstCommonAncestorUsingParent(n3, n2);
